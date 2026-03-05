@@ -12,11 +12,10 @@
   const today = new Date();
   const todayYMD = formatDate(today);
 
-  // ✅ Cloudflare Pages Functions가 살아있는 도메인(여기만 바꾸면 됨)
+  // ✅ 반드시 절대주소 (GitHub Pages에선 이게 필수)
   const API_BASE = "https://notion-da2.pages.dev";
 
-  const apiUrl =
-    `${API_BASE}/api/meal?office=${eduOfficeCode}&school=${schoolCode}&from=${todayYMD}&to=${todayYMD}`;
+  const apiUrl = `${API_BASE}/api/meal?office=${eduOfficeCode}&school=${schoolCode}&from=${todayYMD}&to=${todayYMD}`;
 
   fetch(apiUrl)
     .then(res => res.json())
@@ -30,16 +29,10 @@
       dateRow.innerHTML = `<th>${label}</th>`;
 
       const lunch = entries.find(e => e.MLSV_YMD === todayYMD && e.MMEAL_SC_NM === '중식');
-      const lunchText = lunch
-        ? lunch.DDISH_NM.replace(/\([^\)]*\)/g, '').replace(/<br\/?>/g, '<br>')
-        : '-';
-      lunchRow.innerHTML = `<td>${lunchText}</td>`;
+      lunchRow.innerHTML = `<td>${lunch ? lunch.DDISH_NM.replace(/\([^\)]*\)/g,'').replace(/<br\/?>/g,'<br>') : '-'}</td>`;
 
       const dinner = entries.find(e => e.MLSV_YMD === todayYMD && e.MMEAL_SC_NM === '석식');
-      const dinnerText = dinner
-        ? dinner.DDISH_NM.replace(/\([^\)]*\)/g, '').replace(/<br\/?>/g, '<br>')
-        : '-';
-      dinnerRow.innerHTML = `<td>${dinnerText}</td>`;
+      dinnerRow.innerHTML = `<td>${dinner ? dinner.DDISH_NM.replace(/\([^\)]*\)/g,'').replace(/<br\/?>/g,'<br>') : '-'}</td>`;
     })
     .catch(err => {
       document.getElementById('mealTable').innerHTML =
