@@ -1,0 +1,49 @@
+<script>
+  const eduOfficeCode = 'I10';
+  const schoolCode = '9300181';
+
+  const formatDate = (d) => {
+    const yyyy = d.getFullYear();
+    const mm = String(d.getMonth() + 1).padStart(2, '0');
+    const dd = String(d.getDate()).padStart(2, '0');
+    return `${yyyy}${mm}${dd}`;
+  };
+
+  const today = new Date();
+  const todayYMD = formatDate(today);
+
+  // ✅ Cloudflare Pages Functions가 살아있는 도메인(여기만 바꾸면 됨)
+  const API_BASE = "https://notion-da2.pages.dev";
+
+  const apiUrl =
+    `${API_BASE}/api/meal?office=${eduOfficeCode}&school=${schoolCode}&from=${todayYMD}&to=${todayYMD}`;
+
+  fetch(apiUrl)
+    .then(res => res.json())
+    .then(data => {
+      const entries = data?.mealServiceDietInfo?.[1]?.row || [];
+      const dateRow = document.getElementById('dateRow');
+      const lunchRow = document.getElementById('lunchRow');
+      const dinnerRow = document.getElementById('dinnerRow');
+
+      const label = `${today.getMonth() + 1}/${today.getDate()}`;
+      dateRow.innerHTML = `<th>${label}</th>`;
+
+      const lunch = entries.find(e => e.MLSV_YMD === todayYMD && e.MMEAL_SC_NM === '중식');
+      const lunchText = lunch
+        ? lunch.DDISH_NM.replace(/\([^\)]*\)/g, '').replace(/<br\/?>/g, '<br>')
+        : '-';
+      lunchRow.innerHTML = `<td>${lunchText}</td>`;
+
+      const dinner = entries.find(e => e.MLSV_YMD === todayYMD && e.MMEAL_SC_NM === '석식');
+      const dinnerText = dinner
+        ? dinner.DDISH_NM.replace(/\([^\)]*\)/g, '').replace(/<br\/?>/g, '<br>')
+        : '-';
+      dinnerRow.innerHTML = `<td>${dinnerText}</td>`;
+    })
+    .catch(err => {
+      document.getElementById('mealTable').innerHTML =
+        `<tr><td>데이터를 불러오는 데 실패했습니다.</td></tr>`;
+      console.error(err);
+    });
+</script>
