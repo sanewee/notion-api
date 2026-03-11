@@ -27,6 +27,6 @@ jobs:
         run: |
           git config user.name github-actions
           git config user.email github-actions@github.com
-          git add meal.json
+          git add meal-sasa.json
           git commit -m "update meal" || exit 0
           git push
