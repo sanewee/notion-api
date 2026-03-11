@@ -49,7 +49,7 @@ dinner:dinner?clean(dinner.DDISH_NM):"-"
 
 }
 
-fs.writeFileSync("meal.json",JSON.stringify(output,null,2))
+fs.writeFileSync("meal-sasa.json",JSON.stringify(output,null,2))
 
 }
 
